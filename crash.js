@@ -5,7 +5,7 @@ var camera, // We need a camera.
     container, // Our HTML container for the program.
     rotationPoint;  // The point in which our camera will rotate around.
 
-var characterSize = 50;
+var characterSize = 10;
 var outlineSize = characterSize * 0.05;
 
 // Track all objects and collisions.
@@ -30,6 +30,8 @@ var indicatorBottom;
 /**
  * Run initial setup function and loop through rendering.
  */
+
+
 init();
 animate();
 
@@ -43,9 +45,21 @@ function init() {
 
   // Create the scene.
   scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0xccddff );
-  scene.fog = new THREE.Fog( 0xccddff, 500, 2000 );
 
+  var mtlLoader = new THREE.MTLLoader();
+  mtlLoader.load("models/Tent_Poles_01.mtl", function(materials){
+    materials.preload();
+
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+
+    objLoader.load("models/Tent_Poles_01.obj", function(mesh1){
+
+      scene.add(mesh1);
+      mesh1.position.set(500, 0, 4);
+
+    });
+  });
   // Ambient lights.
   var ambient = new THREE.AmbientLight( 0xffffff );
   scene.add( ambient );
@@ -59,24 +73,103 @@ function init() {
   rotationPoint.position.set( 0, 0, 0 );
   scene.add( rotationPoint );
 
+
+
+
   createCharacter();  // 중심에 있는 상자
   createFloor(); // 바닥 만들기
 
 
-  createTree(300, 300);
-  createTree(800, -300);
-  createTree(-300, 800);
-  createTree(-800, -800);
+//============================================================================================================
+// spaceship outline 우주선 외
+  createSide2(0, 3500, 5000, 200, 0);
+  createSide2(0, -3500, 5000, 200, 0);
 
+  createSide2(2500 + 250 * (Math.pow(3,1/2)), -3250, 1000, 200, -Math.PI/6);
+  createSide2(3000 + 500 * (Math.pow(3,1/2)) , -3000 + 500* (Math.pow(3,1/2)) , 2000, 200, -Math.PI/3);
+  createSide2(4000 + 500 * (Math.pow(3,1/2)) , -3000 + 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+
+  createSide2(4000 + 500 * (Math.pow(3,1/2)) , 3000 - 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+  createSide2(2500 + 250 * (Math.pow(3,1/2)), 3250, 1000, 200, Math.PI/6);
+  createSide2(3000 + 500 * (Math.pow(3,1/2)) , 3000 - 500* (Math.pow(3,1/2)) , 2000, 200,Math.PI/3);
+
+  createSide2(-2500 - 250 * (Math.pow(3,1/2)), -3250, 1000, 200, Math.PI/6);
+  createSide2(-3000 - 500 * (Math.pow(3,1/2)) , -3000 + 500* (Math.pow(3,1/2)) , 2000, 200, Math.PI/3);
+  createSide2(-4000 - 500 * (Math.pow(3,1/2)) , -3000 + 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+
+  createSide2(-2500 - 250 * (Math.pow(3,1/2)), 3250, 1000, 200, -Math.PI/6);
+  createSide2(-3000 - 500 * (Math.pow(3,1/2)) , 3000 - 500* (Math.pow(3,1/2)) , 2000, 200, -Math.PI/3);
+  createSide2(-4000 - 500 * (Math.pow(3,1/2)) , 3000 - 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+//============================================================================================================
+// 우주선 꼬다리
+  createSide1(-4500 - 500 * (Math.pow(3,1/2)), 0, 6000 - 2000 * (Math.pow(3,1/2)));
+  createSide1(4500 + 500 * (Math.pow(3,1/2)), 0, 6000 - 2000 * (Math.pow(3,1/2)));
+
+//============================================================================================================
+
+
+// restaurant  #1
+// ==========================================================================================================
+  var startX1 = -100;
+  var startY1 = -400;
+  createSide2(startX1 + 600, startY1 + 0, 1200, 200, 0);  //1-1
+  createSide2(startX1 +1200 + 300 * (Math.pow(2,1/2)), -300 * (Math.pow(2,1/2))+ startY1, 1200, 200, Math.PI/4); //1-2
+  createSide2(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-600+ startY1, 1200, 200, Math.PI/2); //1-3
+  createSide2(startX1 +1200 + 300 * (Math.pow(2,1/2)), -900 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, -Math.PI/4); //1-4
+  createSide2(startX1 +600, -1200 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, 0); //1-5
+  createSide2( -300 * (Math.pow(2,1/2)) +startX1, -900 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, Math.PI/4); //1-6
+  createSide2( -600 * (Math.pow(2,1/2)) +startX1, -600 * (Math.pow(2,1/2))-600+ startY1, 1200, 200, Math.PI/2); //1-7
+  createSide2( -300 * (Math.pow(2,1/2)) +startX1 , -300 * (Math.pow(2,1/2))+ startY1, 1200, 200, -Math.PI/4); //1-8
+
+// ==========================================================================================================
+// restaurant right  #2
+
+createSide2(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 1000, 200, 0); //2-1
+createSide2(startX1 +2600 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 550, 1100, 200, Math.PI/2); //2-2
+createSide2(startX1 +2350 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 1350, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4); //2-3
+createSide2(startX1 +1850 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 1600, 500, 200,0); //2-4
+createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2))-800, 1600, 200, Math.PI/2); //2-5
+//============================================================
+
+// ==========================================================================================================
+// restaurant right  #3
+createSide2(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 1000, 200, 0); //3-1
+createSide2(startX1 +2600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 550, 1100, 200, Math.PI/2); //3-2
+createSide2(startX1 +2350 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1350, 500 * (Math.pow(2,1/2)), 200, Math.PI/4); //3-3
+createSide2(startX1 +1850 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1600, 500, 200,0); //3-4
+createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 800, 1600, 200, Math.PI/2); //3-5
+
+// ==========================================================================================================
+// restaurant right  #4
+createSide2(-startX1 -2100 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 1000, 200, 0); //4-1
+createSide2(-startX1 -2600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 550, 1100, 200, Math.PI/2); //4-2
+createSide2(-startX1 -2350 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1350, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4); //4-3
+createSide2(-startX1 -1850 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1600, 500, 200,0); //4-4
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 800, 1600, 200, Math.PI/2); //4-5
+
+// ==========================================================================================================
+// restaurant right  #5
+createSide2(-startX1 -2100 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)), 1000, 200, 0); //5-1
+createSide2(-startX1 -2600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 550, 1100, 200, Math.PI/2); //5-2
+createSide2(-startX1 -2350 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1350, 500 * (Math.pow(2,1/2)), 200, Math.PI/4); //5-3
+createSide2(-startX1 -1850 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1600, 500, 200,0); //5-4
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 800, 1600, 200, Math.PI/2); //5-5
+
+
+// ==========================================================================================================
+// restaurant right  #6
+
+createSide2(startX1 + 500, startY1 + 1000, 1000, 200, 0);  //6-1
+createSide2(startX1 + 1000, startY1 + 2250, 2500, 200, Math.PI/2);  //6-2
+createSide2(startX1 + 500, startY1 + 3500, 1000, 200, 0);  //6-3
+
+//============================================================
   // Create the camera.
   camera = new THREE.PerspectiveCamera(
-    50, // Angle
-    window.innerWidth / window.innerHeight, // Aspect Ratio.
-    1, // Near view.
-    20000 // Far view.
+  90, 1280/720, 0.1, 10000
   );
-  camera.position.z = -300;
-  camera.position.y = 200;
+  camera.position.z = 0;
+  camera.position.y = 5000;
   box.add( camera );
 
   // Build the renderer
@@ -96,8 +189,99 @@ function init() {
 
   document.addEventListener( 'mousedown', onDocumentMouseDown, false );
   document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+  //============================================================
+
 }
 
+
+function createCharacter() {
+
+
+
+  var geometry = new THREE.BoxBufferGeometry( characterSize/10, characterSize/10, characterSize/10 );
+  var material = new THREE.MeshPhongMaterial({ color: 0x22dd88 });
+  box = new THREE.Mesh( geometry, material);
+  box.position.y = characterSize / 2;
+  rotationPoint.add( box );
+  // Create outline object
+}
+
+/**
+ * Create the floor of the scene.
+ */
+
+function createFloor() {
+  var geometry = new THREE.PlaneBufferGeometry( 12000, 8000 );
+  var material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+
+  var plane = new THREE.Mesh( geometry, material );
+  plane.rotation.x = -1 * Math.PI/2;
+  plane.position.y = 0;
+  scene.add( plane );
+  objects.push( plane );
+}
+
+/**
+ * Create a happy little tree.
+ */
+function createSide1( posX, posZ, zlength ) {
+  // Set some random values so our trees look different.
+  var randomScale =1;
+  var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
+
+  // Create the trunk.
+  var textureLoader = new THREE.TextureLoader();
+	crateTexture = textureLoader.load("crate0/problem1.png");
+  var geometry = new THREE.BoxGeometry( characterSize/3.5, 200, zlength, 8 ); //200은 높이
+  var material = new THREE.MeshPhongMaterial( {color: 0x664422,
+    map:crateTexture
+
+  } );
+  var trunk = new THREE.Mesh( geometry, material );
+  trunk.position.set(posX, 100, posZ);
+  trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
+  scene.add( trunk );
+
+  calculateCollisionPoints( trunk, randomScale );
+
+  // Create the trunk outline.
+
+
+  var geometry = new THREE.DodecahedronGeometry( characterSize );
+  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
+
+
+  // Create outline.
+
+}
+
+function createSide2( posX, posZ, xlength, zlength, rotate ) {
+  // Set some random values so our trees look different.
+  var randomScale =1;
+  var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
+
+  // Create the trunk.
+  var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
+  var material = new THREE.MeshPhongMaterial( {color: 0x664422} );
+  var trunk = new THREE.Mesh( geometry, material );
+  trunk.position.set(posX, 100, posZ);
+  trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
+  trunk.rotation.y = rotate;
+
+  scene.add( trunk );
+
+  calculateCollisionPoints( trunk, randomScale );
+
+  // Create the trunk outline.
+
+
+  var geometry = new THREE.DodecahedronGeometry( characterSize );
+  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
+
+
+  // Create outline.
+
+}
 /**
  * Event that fires upon window resizing.
  */
@@ -350,60 +534,10 @@ function calculateCollisionPoints( mesh, scale, type = 'collision' ) {
  */
 
 
-function createCharacter() {
-  var geometry = new THREE.BoxBufferGeometry( characterSize, characterSize, characterSize );
-  var material = new THREE.MeshPhongMaterial({ color: 0x22dd88 });
-  box = new THREE.Mesh( geometry, material );
-  box.position.y = characterSize / 2;
-  rotationPoint.add( box );
-
-  // Create outline object
-
-}
-
-/**
- * Create the floor of the scene.
- */
 
 
-function createFloor() {
-  var geometry = new THREE.PlaneBufferGeometry( 1000, 1000 );
-  var material = new THREE.MeshToonMaterial( {color: 0x336633} );
-  var plane = new THREE.Mesh( geometry, material );
-  plane.rotation.x = -1 * Math.PI/2;
-  plane.position.y = 0;
-  scene.add( plane );
-  objects.push( plane );
-}
-
-/**
- * Create a happy little tree.
- */
-function createTree( posX, posZ ) {
-  // Set some random values so our trees look different.
-  var randomScale =1;
-  var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
-
-  // Create the trunk.
-  var geometry = new THREE.BoxGeometry( characterSize/3.5, characterSize/2.5, characterSize * 1.3, 8 );
-  var material = new THREE.MeshToonMaterial( {color: 0x664422} );
-  var trunk = new THREE.Mesh( geometry, material );
-  trunk.position.set(posX, ((characterSize * 1.3 * randomScale)/2), posZ);
-  trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
-  scene.add( trunk );
-
-  calculateCollisionPoints( trunk, randomScale );
-
-  // Create the trunk outline.
 
 
-  var geometry = new THREE.DodecahedronGeometry( characterSize );
-  var material = new THREE.MeshToonMaterial({ color: 0x44aa44 });
-
-
-  // Create outline.
-
-}
 
 /**
  * Draw indicator for movement destination.
@@ -415,7 +549,7 @@ function drawIndicator() {
 
   // Create the top indicator.
   var geometry = new THREE.TetrahedronGeometry( topSize, 0 );
-  var material = new THREE.MeshToonMaterial({ color: 0x00ccff, emissive: 0x00ccff  });
+  var material = new THREE.MeshPhongMaterial({ color: 0x00ccff, emissive: 0x00ccff  });
   indicatorTop = new THREE.Mesh( geometry, material );
   indicatorTop.position.y = 100; // Flat surface so hardcode Y position for now.
   indicatorTop.position.x = movements[ 0 ].x; // Get the X destination.
@@ -434,7 +568,7 @@ function drawIndicator() {
   // Create the bottom indicator.
   var geometry = new THREE.TorusGeometry( bottomRadius, ( bottomRadius * 0.25), 2, 12 );
   geometry.dynamic = true;
-  var material = new THREE.MeshToonMaterial({ color: 0x00ccff, emissive: 0x00ccff });
+  var material = new THREE.MeshPhongMaterial({ color: 0x00ccff, emissive: 0x00ccff });
   indicatorBottom = new THREE.Mesh( geometry, material );
   indicatorBottom.position.y = 2.5;
   indicatorBottom.position.x = movements[ 0 ].x;

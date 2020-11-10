@@ -112,56 +112,188 @@ function init() {
 // ==========================================================================================================
   var startX1 = -100;
   var startY1 = -400;
-  createSide2(startX1 + 600, startY1 + 0, 1200, 200, 0);  //1-1
+  createSide2(startX1 + 200, startY1 + 0, 400, 200, 0);  //1-1-1
+  createSide2(startX1 + 900, startY1 + 0, 600, 200, 0);  //1-1-2
+  createdoor(startX1 + 500, startY1 + 0, 200, 200, 0);  //1-1
+  //wall
+  //=======================================================
+  createwall(startX1 + 400, startY1 + 500, 1000, 200, Math.PI/2);
+  createwall(startX1 + 600, startY1 + 300, 600, 200, Math.PI/2);
+  createwall(startX1 + 600, startY1 + 900, 200, 200, Math.PI/2);
+  createwall(startX1 + 900, startY1 + 600, 600, 200, 0);
+  createwall(startX1 + 900, startY1 + 800, 600, 200, 0);
+
+  //=======================================================
+
+
   createSide2(startX1 +1200 + 300 * (Math.pow(2,1/2)), -300 * (Math.pow(2,1/2))+ startY1, 1200, 200, Math.PI/4); //1-2
-  createSide2(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-600+ startY1, 1200, 200, Math.PI/2); //1-3
+  createSide2(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-250+ startY1, 500, 200, Math.PI/2); //1-3-1
+  createSide2(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-950+ startY1, 500, 200, Math.PI/2); //1-3-2
+  createdoor(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2); //1-3-2
+
+
   createSide2(startX1 +1200 + 300 * (Math.pow(2,1/2)), -900 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, -Math.PI/4); //1-4
   createSide2(startX1 +600, -1200 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, 0); //1-5
   createSide2( -300 * (Math.pow(2,1/2)) +startX1, -900 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, Math.PI/4); //1-6
-  createSide2( -600 * (Math.pow(2,1/2)) +startX1, -600 * (Math.pow(2,1/2))-600+ startY1, 1200, 200, Math.PI/2); //1-7
+  createSide2( -600 * (Math.pow(2,1/2)) +startX1, -600 * (Math.pow(2,1/2))-250+ startY1, 500, 200, Math.PI/2); //1-7-1
+  createSide2( -600 * (Math.pow(2,1/2)) +startX1, -600 * (Math.pow(2,1/2))-950+ startY1, 500, 200, Math.PI/2); //1-7-2
+  createdoor(startX1  - 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2);
+  createwall( -600 * (Math.pow(2,1/2)) -800, -600 * (Math.pow(2,1/2))-700+ startY1, 1400, 200, 0);
+  createwall( -300 * (Math.pow(2,1/2)) -1650, -600 * (Math.pow(2,1/2))-500+ startY1, -300 + 600 * (Math.pow(2,1/2)), 200, 0);
+  createwall( -300 * (Math.pow(2,1/2)) -850, -600 * (Math.pow(2,1/2))-500+ startY1, 1500 - 600 * (Math.pow(2,1/2)), 200, 0);
+  createwall( -1800, -300 * (Math.pow(2,1/2))-1050, -300 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+  createwall( -1600, -300 * (Math.pow(2,1/2))-1050, -300 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+
   createSide2( -300 * (Math.pow(2,1/2)) +startX1 , -300 * (Math.pow(2,1/2))+ startY1, 1200, 200, -Math.PI/4); //1-8
 
 // ==========================================================================================================
 // restaurant right  #2
 
-createSide2(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 1000, 200, 0); //2-1
+createSide2(startX1 +1800 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 400, 200, 0); //2-1-1
+createSide2(startX1 +2400 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 400, 200, 0); //2-1-2
+createdoor(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 200, 200, 0);
+
 createSide2(startX1 +2600 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 550, 1100, 200, Math.PI/2); //2-2
 createSide2(startX1 +2350 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 1350, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4); //2-3
 createSide2(startX1 +1850 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 1600, 500, 200,0); //2-4
-createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2))-800, 1600, 200, Math.PI/2); //2-5
+createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-250+ startY1, 500, 200, Math.PI/2); //2-5-1
+createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-1150+ startY1, 900, 200, Math.PI/2); //2-5-2
+createdoor(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2);
+createwall(startX1 +1400 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-700+ startY1, 400, 200, 0);
+createwall(startX1 +1400 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-500+ startY1, 400, 200, 0);
+
+
 //============================================================
+createwall(startX1 +2000 +600 * (Math.pow(2,1/2)), 0, - 2 * startY1 + 1200 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 +2200 +600 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 +2200 +600 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 +3800 +500 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 +3800 +500 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 +3000 +550 * (Math.pow(2,1/2)),-100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
+createwall(startX1 +3000 +550 * (Math.pow(2,1/2)),100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
 
 // ==========================================================================================================
 // restaurant right  #3
-createSide2(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 1000, 200, 0); //3-1
+createSide2(startX1 +1800 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //3-1-1
+createSide2(startX1 +2400 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //3-1-2
+createdoor(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 200, 200, 0);
+
 createSide2(startX1 +2600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 550, 1100, 200, Math.PI/2); //3-2
 createSide2(startX1 +2350 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1350, 500 * (Math.pow(2,1/2)), 200, Math.PI/4); //3-3
 createSide2(startX1 +1850 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1600, 500, 200,0); //3-4
-createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 800, 1600, 200, Math.PI/2); //3-5
+createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 25, 50, 200, Math.PI/2); //3-5-1
+createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 925, 1350, 200, Math.PI/2); //3-5-1
+createdoor(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 150, 200, 200, Math.PI/2); //3-5-1
 
 // ==========================================================================================================
 // restaurant right  #4
-createSide2(-startX1 -2100 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 1000, 200, 0); //4-1
+createSide2(-startX1 -1800 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //4-1-1
+createSide2(-startX1 -2400 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //4-1-2
 createSide2(-startX1 -2600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 550, 1100, 200, Math.PI/2); //4-2
 createSide2(-startX1 -2350 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1350, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4); //4-3
 createSide2(-startX1 -1850 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1600, 500, 200,0); //4-4
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 800, 1600, 200, Math.PI/2); //4-5
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,   600 * (Math.pow(2,1/2)) + 600, 400, 200, Math.PI/2); //4-5-1
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,   600 * (Math.pow(2,1/2)) + 1500, 1000, 200, Math.PI/2); //4-5-2
 
 // ==========================================================================================================
 // restaurant right  #5
-createSide2(-startX1 -2100 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)), 1000, 200, 0); //5-1
+createSide2(-startX1 -1800 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)), 400, 200, 0); //5-1-1
+createSide2(-startX1 -2400 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)), 400, 200, 0); //5-1-2
+
 createSide2(-startX1 -2600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 550, 1100, 200, Math.PI/2); //5-2
 createSide2(-startX1 -2350 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1350, 500 * (Math.pow(2,1/2)), 200, Math.PI/4); //5-3
 createSide2(-startX1 -1850 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1600, 500, 200,0); //5-4
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 800, 1600, 200, Math.PI/2); //5-5
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 250, 500, 200, Math.PI/2); //5-5-1
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1150, 900, 200, Math.PI/2); //5-5-2
+createdoor(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2);
+
+//왼쪽 꼬다리벽
+createwall(startX1 + 200- 3000 - 550 * (Math.pow(2,1/2)),-100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
+createwall(startX1 + 200- 3000 -550 * (Math.pow(2,1/2)),100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
+createwall(startX1 + 200- 2000 - 600 * (Math.pow(2,1/2)), 0, - 2 * startY1 + 1200 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 + 200- 2200 - 600 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 + 200- 2200 - 600 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 + 200- 3800 - 500 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 + 200- 3800 - 500 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
 
 
 // ==========================================================================================================
 // restaurant right  #6
+createSide2(startX1 + 200, startY1 + 1000, 400, 200, 0);  //6-1-1
+createSide2(startX1 + 800, startY1 + 1000, 400, 200, 0);  //6-1-2
+createSide2(startX1 + 1000,  525+ 300 * (Math.pow(2,1/2)), 600 * (Math.pow(2,1/2))-150, 200, Math.PI/2);  //6-2-1
+createSide2(startX1 + 1000,  1875+ 300 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))+2450, 200, Math.PI/2);  //6-2-2
+createdoor(startX1 +1000,  -startY1 + 600 * (Math.pow(2,1/2)) + 150, 200, 200, Math.PI/2);
 
-createSide2(startX1 + 500, startY1 + 1000, 1000, 200, 0);  //6-1
-createSide2(startX1 + 1000, startY1 + 2250, 2500, 200, Math.PI/2);  //6-2
+createwall(startX1 +1300 + 300 * (Math.pow(2,1/2)),  -startY1 + 600 * (Math.pow(2,1/2)) + 50, 600 * (Math.pow(2,1/2)) + 600, 200, 0);
+createwall(startX1 +1300,  -startY1 + 600 * (Math.pow(2,1/2)) + 250, 600, 200, 0);
+createwall(startX1 + 300 * (Math.pow(2,1/2)) + 1700,  -startY1 + 600 * (Math.pow(2,1/2)) + 250 , -200 + 600 * (Math.pow(2,1/2)), 200, 0);
+createwall(startX1 + 1800,  1375 + 300 * (Math.pow(2,1/2)) , 1450 - 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+createwall(startX1 + 1600,  1375 + 300 * (Math.pow(2,1/2)) , 1450 - 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+
+
+
 createSide2(startX1 + 500, startY1 + 3500, 1000, 200, 0);  //6-3
+createSide2(startX1 - 250, startY1 + 3250, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4);  //6-4
+createSide2(startX1 - 500, 300 * (Math.pow(2,1/2)) + 950, 600 * (Math.pow(2,1/2)) - 300, 200, Math.PI/2);  //6-5-1
+createSide2(startX1 - 500, 300 * (Math.pow(2,1/2)) + 1800, -600 * (Math.pow(2,1/2))+ 1600, 200, Math.PI/2);  //6-5-1
+
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 800, 600 * (Math.pow(2,1/2)) - 800, 200, Math.PI/2); //4-5-1
+createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1150, 900, 200, Math.PI/2); //4-5-2
+
+
+createSide2(startX1 - 250, startY1 + 1250, 500 * (Math.pow(2,1/2)), 200, Math.PI/4);  //6-6
+createdoor(startX1 + 500, startY1 + 1000, 200, 200, 0);  //6-1-1
+
+// ==========================================================================================================
+// restaurant right  #7
+createSide2(startX1 + 1200, startY1 + 3000, 1000, 200, Math.PI/2);  //7-1
+createSide2(startX1 + 1600, startY1 + 3500, 800, 200, 0);  //7-2
+createSide2(startX1 + 2100, startY1 + 3400, 200 * (Math.pow(2,1/2)), 200, Math.PI/4);  //7-2
+createSide2(startX1 + 2200, startY1 + 2900, 800, 200, Math.PI/2);  //7-4
+
+createSide2(startX1 + 1400, startY1 + 2500, 400, 200, 0);  //7-5-1
+createSide2(startX1 + 2000, startY1 + 2500, 400, 200, 0);  //7-5-2
+
+// ==========================================================================================================
+// restaurant right  #8
+createSide2(startX1 + 1700, startY1 +500, 1000, 200, 0);  //8-1
+createSide2(startX1 + 1200, startY1 +550, 100, 200, Math.PI/2);  //8-2-1
+createSide2(startX1 + 1200, startY1 +1150, 700, 200, Math.PI/2);  //8-2-2
+createSide2(startX1 + 1650, startY1 +1500, 900, 200, 0);  //8-3
+createSide2(startX1 + 2150, startY1 +1450, 100 * (Math.pow(2,1/2)), 200, Math.PI/4);  //8-4
+createSide2(startX1 + 2200, startY1 +950, 900, 200, Math.PI/2);  //8-5
+
+
+// ==========================================================================================================
+// restaurant right  #9
+createSide2(startX1 - 2000, startY1 -300, 1000, 200, Math.PI/2);  //9-1
+createSide2(startX1 - 1500, startY1 + 200, 1000, 200, 0);  //9-2
+createSide2(startX1 - 1000, startY1 +100, 200, 200, Math.PI/2);  //9-3
+createSide2(startX1 - 1100, startY1 -100, 200 * (Math.pow(2,1/2)), 200, -Math.PI/4);  //9-4
+createSide2(startX1 - 1200, startY1 - 500, 600, 200, Math.PI/2);  //9-5
+createSide2(startX1 - 1350, startY1 - 800, 300, 200, 0);  //9-6-1
+createSide2(startX1 - 1850, startY1 - 800, 300, 200, 0);  //9-6-2
+
+
+// ==========================================================================================================
+// restaurant right  #10
+createSide2(200+startX1 - 2000,  200 -startY1 +300, 1000, 200, Math.PI/2);  //10-1
+createSide2(200+startX1 - 1500, 200-startY1 - 200, 1000, 200, 0);  //10-2
+createSide2(200+startX1 - 1000, 200-startY1 -100, 200, 200, Math.PI/2);  //10-3
+createSide2(200+startX1 - 1100, 200-startY1 +100, 200* (Math.pow(2,1/2)), 200, Math.PI/4);  //10-4
+createSide2(200+startX1 - 1200, 200-startY1 + 500, 600, 200, Math.PI/2);  //10-5
+createSide2(200+startX1 - 1350, 200-startY1 + 800, 300, 200, 0);  //10-6-1
+createSide2(200+startX1 - 1850, 200-startY1 + 800, 300, 200, 0);  //10-6-2
+
+createwall(-1550 - 300 * (Math.pow(2,1/2)), 800 + 600* (Math.pow(2,1/2)), -100 + 600* (Math.pow(2,1/2)), 200, 0);
+createwall(-1050-300 * (Math.pow(2,1/2)), 1000 + 600* (Math.pow(2,1/2)), 900 + 600* (Math.pow(2,1/2)), 200, 0);
+createwall(-1000, 800 + 600* (Math.pow(2,1/2)), 800, 200, 0);
+createwall(-1600, 1100 + 300* (Math.pow(2,1/2)), 600* (Math.pow(2,1/2)) - 600, 200, Math.PI/2);
+createwall(-1400, 1100 + 300* (Math.pow(2,1/2)), 600* (Math.pow(2,1/2)) - 600, 200, Math.PI/2);
+createdoor(-1500 - 600 * (Math.pow(2,1/2)), 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);
+createdoor(-600, 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);  
+
 
 //============================================================
   // Create the camera.
@@ -198,10 +330,12 @@ function createCharacter() {
 
 
 
-  var geometry = new THREE.BoxBufferGeometry( characterSize/10, characterSize/10, characterSize/10 );
+  var geometry = new THREE.BoxBufferGeometry( 50, 50, 50 );
   var material = new THREE.MeshPhongMaterial({ color: 0x22dd88 });
   box = new THREE.Mesh( geometry, material);
-  box.position.y = characterSize / 2;
+  box.position.y = 0;
+
+
   rotationPoint.add( box );
   // Create outline object
 }
@@ -263,6 +397,62 @@ function createSide2( posX, posZ, xlength, zlength, rotate ) {
   // Create the trunk.
   var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
   var material = new THREE.MeshPhongMaterial( {color: 0x664422} );
+  var trunk = new THREE.Mesh( geometry, material );
+  trunk.position.set(posX, 100, posZ);
+  trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
+  trunk.rotation.y = rotate;
+
+  scene.add( trunk );
+
+  calculateCollisionPoints( trunk, randomScale );
+
+  // Create the trunk outline.
+
+
+  var geometry = new THREE.DodecahedronGeometry( characterSize );
+  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
+
+
+  // Create outline.
+
+}
+
+function createdoor( posX, posZ, xlength, zlength, rotate ) {
+  // Set some random values so our trees look different.
+  var randomScale =1;
+  var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
+
+  // Create the trunk.
+  var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
+  var material = new THREE.MeshPhongMaterial( {color: 0x334422} );
+  var trunk = new THREE.Mesh( geometry, material );
+  trunk.position.set(posX, 100, posZ);
+  trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
+  trunk.rotation.y = rotate;
+
+  scene.add( trunk );
+
+  calculateCollisionPoints( trunk, randomScale );
+
+  // Create the trunk outline.
+
+
+  var geometry = new THREE.DodecahedronGeometry( characterSize );
+  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
+
+
+  // Create outline.
+
+}
+
+function createwall( posX, posZ, xlength, zlength, rotate ) {
+  // Set some random values so our trees look different.
+  var randomScale =1;
+  var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
+
+  // Create the trunk.
+  var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
+  var material = new THREE.MeshPhongMaterial( {color: 0x111122} );
   var trunk = new THREE.Mesh( geometry, material );
   trunk.position.set(posX, 100, posZ);
   trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;

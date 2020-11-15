@@ -5,7 +5,7 @@ var camera, // We need a camera.
     container, // Our HTML container for the program.
     rotationPoint;  // The point in which our camera will rotate around.
 
-var characterSize = 10;
+var characterSize = 1;
 var outlineSize = characterSize * 0.05;
 
 // Track all objects and collisions.
@@ -18,7 +18,7 @@ var mouse = new THREE.Vector2();
 
 // Store movements.
 var movements = [];
-var playerSpeed = 5;
+var playerSpeed = 0.05;
 
 // Watch for double clicks.
 var clickTimer = null;
@@ -33,7 +33,9 @@ var indicatorBottom;
 
 
 init();
+
 animate();
+
 
 /**
  * Initializer function.
@@ -46,21 +48,6 @@ function init() {
   // Create the scene.
   scene = new THREE.Scene();
 
-  var mtlLoader = new THREE.MTLLoader();
-  mtlLoader.load("models/Tent_Poles_01.mtl", function(materials){
-    materials.preload();
-
-    var objLoader = new THREE.OBJLoader();
-    objLoader.setMaterials(materials);
-
-    objLoader.load("models/Tent_Poles_01.obj", function(mesh1){
-
-      scene.add(mesh1);
-      mesh1.position.set(500, 0, 4);
-
-    });
-  });
-  // Ambient lights.
   var ambient = new THREE.AmbientLight( 0xffffff );
   scene.add( ambient );
 
@@ -73,227 +60,251 @@ function init() {
   rotationPoint.position.set( 0, 0, 0 );
   scene.add( rotationPoint );
 
-
-
-
   createCharacter();  // 중심에 있는 상자
   createFloor(); // 바닥 만들기
 
 
+  }
+
+  function createCharacter() {
+
+    var geometry = new THREE.BoxBufferGeometry( 0.5, 0.5, 0.5 );
+    var material = new THREE.MeshPhongMaterial({ color: 0x22dd88 });
+
+    box = new THREE.Mesh( geometry, material);
+    box.position.y = 0;
+    rotationPoint.add( box );
+    // Create outline object
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, -9, -Math.PI/4);
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, -6, -Math.PI/4);
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, -3, -Math.PI/4);
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, 0, -Math.PI/4);
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, 3, -Math.PI/4);
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, 6, -Math.PI/4);
+    createObject("models/craft_cargoA.mtl", "models/craft_cargoA.obj", -50, 0, 9, -Math.PI/4);
+
+    createObject("models/bedSingle.mtl", "models/bedSingle.obj", -15, 0, -10, Math.PI/2);
+    createObject("models/bedSingle.mtl", "models/bedSingle.obj", -15, 0, -7.5, Math.PI/2);
+    createObject("models/bedSingle.mtl", "models/bedSingle.obj", -19, 0, -6, -Math.PI/2);
+    createObject("models/bedSingle.mtl", "models/bedSingle.obj", -19, 0, -8.5, -Math.PI/2);
+    createObject("models/bedSingle.mtl", "models/bedSingle.obj", -19, 0, -3.5, -Math.PI/2);
+    createObject("models/rocket_baseA.mtl", "models/rocket_baseA.obj", -14, 0, -3.5, 0);
+    createObject("models/bookcaseOpen.mtl", "models/bookcaseOpen.obj", 0, 0, 0, 0);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -23 - 6 * (Math.pow(2,1/2)), 0, 10 + 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -23 - 6 * (Math.pow(2,1/2)), 0, 12 + 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -20 - 6 * (Math.pow(2,1/2)), 0, 12 + 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -20 - 6 * (Math.pow(2,1/2)), 0, 10 + 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -23 - 6 * (Math.pow(2,1/2)), 0, -10 - 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -23 - 6 * (Math.pow(2,1/2)), 0, -12 - 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -20 - 6 * (Math.pow(2,1/2)), 0, -12 - 6 * (Math.pow(2,1/2)), Math.PI/2);
+    createObject("models/hangar_largeA.mtl", "models/hangar_largeA.obj", -20 - 6 * (Math.pow(2,1/2)), 0, -10 - 6 * (Math.pow(2,1/2)), Math.PI/2);
+
+    function createObject(mtl, obj, x, y, z, angle) {
+  var mtlLoader = new THREE.MTLLoader();
+	mtlLoader.load(mtl, function(materials){
+
+		materials.preload();
+		var objLoader = new THREE.OBJLoader();
+		objLoader.setMaterials(materials);
+
+		objLoader.load(obj, function(mesh){
+
+			mesh.traverse(function(node){
+				if( node instanceof THREE.Mesh ){
+					node.castShadow = true;
+					node.receiveShadow = true;
+				}
+			});
+
+			scene.add(mesh);
+			mesh.position.set(x, y, z);
+			mesh.rotation.y = angle;
+		});
+
+	});
+
+}
 //============================================================================================================
 // spaceship outline 우주선 외
-  createSide2(0, 3500, 5000, 200, 0);
-  createSide2(0, -3500, 5000, 200, 0);
+  createSide3(0, 35, 50, 200, 0, "rgb(60, 75, 75)");
+  createSide3(0, -35, 50, 200, 0, "rgb(60, 75, 75)");
 
-  createSide2(2500 + 250 * (Math.pow(3,1/2)), -3250, 1000, 200, -Math.PI/6);
-  createSide2(3000 + 500 * (Math.pow(3,1/2)) , -3000 + 500* (Math.pow(3,1/2)) , 2000, 200, -Math.PI/3);
-  createSide2(4000 + 500 * (Math.pow(3,1/2)) , -3000 + 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+  createSide3(25 + 2.5 * (Math.pow(3,1/2)), -32.5, 10, 200, -Math.PI/6, "rgb(60, 75, 75)");
+  createSide3(30 + 5 * (Math.pow(3,1/2)) , -30 + 5* (Math.pow(3,1/2)) , 20, 200, -Math.PI/3, "rgb(60, 75, 75)");
+  createSide3(40 + 5 * (Math.pow(3,1/2)) , -30 + 10* (Math.pow(3,1/2)) , 10, 200, 0, "rgb(60, 75, 75)");
 
-  createSide2(4000 + 500 * (Math.pow(3,1/2)) , 3000 - 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
-  createSide2(2500 + 250 * (Math.pow(3,1/2)), 3250, 1000, 200, Math.PI/6);
-  createSide2(3000 + 500 * (Math.pow(3,1/2)) , 3000 - 500* (Math.pow(3,1/2)) , 2000, 200,Math.PI/3);
+  createSide3(40 + 5 * (Math.pow(3,1/2)) , 30- 10* (Math.pow(3,1/2)) , 10, 200, 0, "rgb(60, 75, 75)");
+  createSide3(25 + 2.5 * (Math.pow(3,1/2)), 32.5, 10, 200, Math.PI/6, "rgb(60, 75, 75)");
+  createSide3(30 + 5 * (Math.pow(3,1/2)) , 30 - 5* (Math.pow(3,1/2)) , 20, 200,Math.PI/3, "rgb(60, 75, 75)");
 
-  createSide2(-2500 - 250 * (Math.pow(3,1/2)), -3250, 1000, 200, Math.PI/6);
-  createSide2(-3000 - 500 * (Math.pow(3,1/2)) , -3000 + 500* (Math.pow(3,1/2)) , 2000, 200, Math.PI/3);
-  createSide2(-4000 - 500 * (Math.pow(3,1/2)) , -3000 + 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+  createSide3(-25 - 2.5 * (Math.pow(3,1/2)), -32.5, 10, 200, Math.PI/6, "rgb(60, 75, 75)");
+  createSide3(-30 - 5.0 * (Math.pow(3,1/2)) , -30 + 5* (Math.pow(3,1/2)) , 20, 200, Math.PI/3, "rgb(60, 75, 75)");
+  createSide3(-40 - 5.0 * (Math.pow(3,1/2)) , -30 + 10* (Math.pow(3,1/2)) , 10, 200, 0, "rgb(60, 75, 75)");
 
-  createSide2(-2500 - 250 * (Math.pow(3,1/2)), 3250, 1000, 200, -Math.PI/6);
-  createSide2(-3000 - 500 * (Math.pow(3,1/2)) , 3000 - 500* (Math.pow(3,1/2)) , 2000, 200, -Math.PI/3);
-  createSide2(-4000 - 500 * (Math.pow(3,1/2)) , 3000 - 1000* (Math.pow(3,1/2)) , 1000, 200, 0);
+  createSide3(-25 - 2.5 * (Math.pow(3,1/2)), 32.5, 10, 200, -Math.PI/6, "rgb(60, 75, 75)");
+  createSide3(-30 - 5.0 * (Math.pow(3,1/2)) , 30 - 5* (Math.pow(3,1/2)) , 20, 200, -Math.PI/3, "rgb(60, 75, 75)");
+  createSide3(-40 - 5.0 * (Math.pow(3,1/2)) , 30 - 10* (Math.pow(3,1/2)) , 10, 200, 0, "rgb(60, 75, 75)");
 //============================================================================================================
 // 우주선 꼬다리
-  createSide1(-4500 - 500 * (Math.pow(3,1/2)), 0, 6000 - 2000 * (Math.pow(3,1/2)));
-  createSide1(4500 + 500 * (Math.pow(3,1/2)), 0, 6000 - 2000 * (Math.pow(3,1/2)));
+  createSide1(-45 - 5 * (Math.pow(3,1/2)), 0, 60 - 20 * (Math.pow(3,1/2)));
+  createSide1(45 + 5 * (Math.pow(3,1/2)), 0, 60 - 20 * (Math.pow(3,1/2)));
 
 //============================================================================================================
-
+var startX1 = -1;
+var startY1 = -4;
 
 // restaurant  #1
 // ==========================================================================================================
-  var startX1 = -100;
-  var startY1 = -400;
-  createSide2(startX1 + 200, startY1 + 0, 400, 200, 0);  //1-1-1
-  createSide2(startX1 + 900, startY1 + 0, 600, 200, 0);  //1-1-2
-  createdoor(startX1 + 500, startY1 + 0, 200, 200, 0);  //1-1
-  //wall
-  //=======================================================
-  createwall(startX1 + 400, startY1 + 500, 1000, 200, Math.PI/2);
-  createwall(startX1 + 600, startY1 + 300, 600, 200, Math.PI/2);
-  createwall(startX1 + 600, startY1 + 900, 200, 200, Math.PI/2);
-  createwall(startX1 + 900, startY1 + 600, 600, 200, 0);
-  createwall(startX1 + 900, startY1 + 800, 600, 200, 0);
-
-  //=======================================================
-
-
-  createSide2(startX1 +1200 + 300 * (Math.pow(2,1/2)), -300 * (Math.pow(2,1/2))+ startY1, 1200, 200, Math.PI/4); //1-2
-  createSide2(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-250+ startY1, 500, 200, Math.PI/2); //1-3-1
-  createSide2(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-950+ startY1, 500, 200, Math.PI/2); //1-3-2
-  createdoor(startX1 +1200 + 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2); //1-3-2
-
-
-  createSide2(startX1 +1200 + 300 * (Math.pow(2,1/2)), -900 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, -Math.PI/4); //1-4
-  createSide2(startX1 +600, -1200 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, 0); //1-5
-  createSide2( -300 * (Math.pow(2,1/2)) +startX1, -900 * (Math.pow(2,1/2))-1200+ startY1, 1200, 200, Math.PI/4); //1-6
-  createSide2( -600 * (Math.pow(2,1/2)) +startX1, -600 * (Math.pow(2,1/2))-250+ startY1, 500, 200, Math.PI/2); //1-7-1
-  createSide2( -600 * (Math.pow(2,1/2)) +startX1, -600 * (Math.pow(2,1/2))-950+ startY1, 500, 200, Math.PI/2); //1-7-2
-  createdoor(startX1  - 600 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2);
-  createwall( -600 * (Math.pow(2,1/2)) -800, -600 * (Math.pow(2,1/2))-700+ startY1, 1400, 200, 0);
-  createwall( -300 * (Math.pow(2,1/2)) -1650, -600 * (Math.pow(2,1/2))-500+ startY1, -300 + 600 * (Math.pow(2,1/2)), 200, 0);
-  createwall( -300 * (Math.pow(2,1/2)) -850, -600 * (Math.pow(2,1/2))-500+ startY1, 1500 - 600 * (Math.pow(2,1/2)), 200, 0);
-  createwall( -1800, -300 * (Math.pow(2,1/2))-1050, -300 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-  createwall( -1600, -300 * (Math.pow(2,1/2))-1050, -300 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-
-  createSide2( -300 * (Math.pow(2,1/2)) +startX1 , -300 * (Math.pow(2,1/2))+ startY1, 1200, 200, -Math.PI/4); //1-8
+  createSide2(startX1 + 2, startY1 + 0, 4.0, 200, 0, "rgb(180, 180, 180)");  //1-1-1
+  createSide2(startX1 + 9.0, startY1 + 0, 6.0, 200, 0, "rgb(180, 180, 180)");  //1-1-2
+  createSide2(startX1 +12.0 + 3.0 * (Math.pow(2,1/2)), -3.0 * (Math.pow(2,1/2))+ startY1, 12.0, 200, Math.PI/4, "rgb(180, 180, 180)"); //1-2
+  createSide2(startX1 +12.0 + 6.0 * (Math.pow(2,1/2)), -6.0 * (Math.pow(2,1/2))-2.5+ startY1, 5.0, 200, Math.PI/2, "rgb(180, 180, 180)"); //1-3-1
+  createSide2(startX1 +12.0 + 6.0 * (Math.pow(2,1/2)), -6.0 * (Math.pow(2,1/2))-9.5+ startY1, 5.0, 200, Math.PI/2, "rgb(180, 180, 180)"); //1-3-2
+  createSide2(startX1 +12.0 + 3.0 * (Math.pow(2,1/2)), -9.0 * (Math.pow(2,1/2))-12.0+ startY1, 12.0, 200, -Math.PI/4, "rgb(180, 180, 180)"); //1-4
+  createSide2(startX1 +6.0, -12.0 * (Math.pow(2,1/2))-12.0+ startY1, 12.0, 200, 0, "rgb(180, 180, 180)"); //1-5
+  createSide2( -3.0 * (Math.pow(2,1/2)) +startX1, -9.0 * (Math.pow(2,1/2))-12.0+ startY1, 12.0, 200, Math.PI/4, "rgb(180, 180, 180)"); //1-6
+  createSide2( -6.0 * (Math.pow(2,1/2)) +startX1, -6.0 * (Math.pow(2,1/2))-2.5+ startY1, 5.0, 200, Math.PI/2, "rgb(180, 180, 180)"); //1-7-1
+  createSide2( -6.0 * (Math.pow(2,1/2)) +startX1, -6.0 * (Math.pow(2,1/2))-9.5+ startY1, 5.0, 200, Math.PI/2, "rgb(180, 180, 180)"); //1-7-2
+  createSide2( -3.0 * (Math.pow(2,1/2)) +startX1 , -3.0 * (Math.pow(2,1/2))+ startY1, 12.0, 200, -Math.PI/4, "rgb(180, 180, 180)"); //1-8
 
 // ==========================================================================================================
-// restaurant right  #2
-
-createSide2(startX1 +1800 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 400, 200, 0); //2-1-1
-createSide2(startX1 +2400 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 400, 200, 0); //2-1-2
-createdoor(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)), 200, 200, 0);
-
-createSide2(startX1 +2600 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 550, 1100, 200, Math.PI/2); //2-2
-createSide2(startX1 +2350 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 1350, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4); //2-3
-createSide2(startX1 +1850 +600 * (Math.pow(2,1/2)) ,  startY1 -600 * (Math.pow(2,1/2)) - 1600, 500, 200,0); //2-4
-createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-250+ startY1, 500, 200, Math.PI/2); //2-5-1
-createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-1150+ startY1, 900, 200, Math.PI/2); //2-5-2
-createdoor(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2);
-createwall(startX1 +1400 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-700+ startY1, 400, 200, 0);
-createwall(startX1 +1400 +600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-500+ startY1, 400, 200, 0);
-
-
-//============================================================
-createwall(startX1 +2000 +600 * (Math.pow(2,1/2)), 0, - 2 * startY1 + 1200 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 +2200 +600 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 +2200 +600 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 +3800 +500 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 +3800 +500 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 +3000 +550 * (Math.pow(2,1/2)),-100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
-createwall(startX1 +3000 +550 * (Math.pow(2,1/2)),100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
-
+// #2
+createSide2(startX1 +18 +6.0 * (Math.pow(2,1/2)) ,  startY1 -6.0 * (Math.pow(2,1/2)), 4.0, 200, 0, "rgb(190, 195, 165)"); //2-1-1
+createSide2(startX1 +24.0 +6.0 * (Math.pow(2,1/2)) ,  startY1 -6.0 * (Math.pow(2,1/2)), 4.0, 200, 0, "rgb(190, 195, 165)"); //2-1-2
+createSide2(startX1 +26.0 +6.0 * (Math.pow(2,1/2)) ,  startY1 -6.0 * (Math.pow(2,1/2)) - 5.5, 11.0, 200, Math.PI/2, "rgb(190, 195, 165)"); //2-2
+createSide2(startX1 +23.5 +6.0 * (Math.pow(2,1/2)) ,  startY1 -6.0 * (Math.pow(2,1/2)) - 13.5, 5.0 * (Math.pow(2,1/2)), 200, -Math.PI/4, "rgb(190, 195, 165)"); //2-3
+createSide2(startX1 +18.5 +6.0 * (Math.pow(2,1/2)) ,  startY1 -6.0 * (Math.pow(2,1/2)) - 16.0, 5.0, 200,0, "rgb(190, 195, 165)"); //2-4
+createSide2(startX1 +16.0 +6.0 * (Math.pow(2,1/2)) ,  -6.0 * (Math.pow(2,1/2))-2.5+ startY1, 5.0, 200, Math.PI/2, "rgb(190, 195, 165)"); //2-5-1
+createSide2(startX1 +16.0 +6.0 * (Math.pow(2,1/2)) ,  -6.0 * (Math.pow(2,1/2))-11.5+ startY1, 9.0, 200, Math.PI/2, "rgb(190, 195, 165)"); //2-5-2
 // ==========================================================================================================
 // restaurant right  #3
-createSide2(startX1 +1800 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //3-1-1
-createSide2(startX1 +2400 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //3-1-2
-createdoor(startX1 +2100 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 200, 200, 0);
-
-createSide2(startX1 +2600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 550, 1100, 200, Math.PI/2); //3-2
-createSide2(startX1 +2350 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1350, 500 * (Math.pow(2,1/2)), 200, Math.PI/4); //3-3
-createSide2(startX1 +1850 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1600, 500, 200,0); //3-4
-createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 25, 50, 200, Math.PI/2); //3-5-1
-createSide2(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 925, 1350, 200, Math.PI/2); //3-5-1
-createdoor(startX1 +1600 +600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 150, 200, 200, Math.PI/2); //3-5-1
+createSide2(startX1 +18.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)), 4.00, 200, 0, "rgb(190, 195, 165)"); //3-1-1
+createSide2(startX1 +24.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)), 4.00, 200, 0, "rgb(190, 195, 165)"); //3-1-2
+createSide2(startX1 +26.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 5.50, 11.00, 200, Math.PI/2, "rgb(190, 195, 165)"); //3-2
+createSide2(startX1 +23.50 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 13.50, 5.00 * (Math.pow(2,1/2)), 200, Math.PI/4, "rgb(190, 195, 165)"); //3-3
+createSide2(startX1 +18.50 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 16.00, 5.0, 200,0, "rgb(190, 195, 165)"); //3-4
+createSide2(startX1 +16.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 0.25, 0.50, 200, Math.PI/2, "rgb(190, 195, 165)"); //3-5-1
+createSide2(startX1 +16.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 9.25, 13.50, 200, Math.PI/2, "rgb(190, 195, 165)"); //3-5-2
 
 // ==========================================================================================================
-// restaurant right  #4
-createSide2(-startX1 -1800 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //4-1-1
-createSide2(-startX1 -2400 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)), 400, 200, 0); //4-1-2
-createSide2(-startX1 -2600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 550, 1100, 200, Math.PI/2); //4-2
-createSide2(-startX1 -2350 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1350, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4); //4-3
-createSide2(-startX1 -1850 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1600, 500, 200,0); //4-4
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,   600 * (Math.pow(2,1/2)) + 600, 400, 200, Math.PI/2); //4-5-1
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,   600 * (Math.pow(2,1/2)) + 1500, 1000, 200, Math.PI/2); //4-5-2
-
+// #4
+createSide2(-startX1 -18.00 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)), 4.00, 200, 0, "rgb(155, 110, 15)"); //4-1-1
+createSide2(-startX1 -24.00 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)), 4.00, 200, 0, "rgb(155, 110, 15)"); //4-1-2
+createSide2(-startX1 -26.00 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 5.50, 11.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //4-2
+createSide2(-startX1 -23.50 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 13.50, 5.00 * (Math.pow(2,1/2)), 200, -Math.PI/4, "rgb(155, 110, 15)"); //4-3
+createSide2(-startX1 -18.50 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 16.00, 5.00, 200,0, "rgb(155, 110, 15)"); //4-4
+createSide2(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,   6.00 * (Math.pow(2,1/2)) + 6.00, 4.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //4-5-1
+createSide2(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,   6.00 * (Math.pow(2,1/2)) + 15.00, 10.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //4-5-2
+createSide2(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 8.00, 6.00 * (Math.pow(2,1/2)) - 8.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //4-5-1
+createSide2(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 11.50, 9.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //4-5-2
 // ==========================================================================================================
-// restaurant right  #5
-createSide2(-startX1 -1800 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)), 400, 200, 0); //5-1-1
-createSide2(-startX1 -2400 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)), 400, 200, 0); //5-1-2
-
-createSide2(-startX1 -2600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 550, 1100, 200, Math.PI/2); //5-2
-createSide2(-startX1 -2350 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1350, 500 * (Math.pow(2,1/2)), 200, Math.PI/4); //5-3
-createSide2(-startX1 -1850 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1600, 500, 200,0); //5-4
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 250, 500, 200, Math.PI/2); //5-5-1
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  startY1 - 600 * (Math.pow(2,1/2)) - 1150, 900, 200, Math.PI/2); //5-5-2
-createdoor(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -600 * (Math.pow(2,1/2))-600+ startY1, 200, 200, Math.PI/2);
-
-//왼쪽 꼬다리벽
-createwall(startX1 + 200- 3000 - 550 * (Math.pow(2,1/2)),-100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
-createwall(startX1 + 200- 3000 -550 * (Math.pow(2,1/2)),100,  1600 - 100 * (Math.pow(2,1/2)), 200, 0);
-createwall(startX1 + 200- 2000 - 600 * (Math.pow(2,1/2)), 0, - 2 * startY1 + 1200 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 + 200- 2200 - 600 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 + 200- 2200 - 600 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 + 200- 3800 - 500 * (Math.pow(2,1/2)), 250 + 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 + 200- 3800 - 500 * (Math.pow(2,1/2)),-250 - 300 * (Math.pow(2,1/2)), - startY1 - 100 + 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
+// #5
+createSide2(-startX1 -18.00 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)), 4.00, 200, 0, "rgb(155, 110, 15)"); //5-1-1
+createSide2(-startX1 -24.00 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)), 4.00, 200, 0, "rgb(155, 110, 15)"); //5-1-2
+createSide2(-startX1 -26.00 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)) - 5.50, 11.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //5-2
+createSide2(-startX1 -23.50 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)) - 13.50, 5.00 * (Math.pow(2,1/2)), 200, Math.PI/4, "rgb(155, 110, 15)"); //5-3
+createSide2(-startX1 -18.50 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)) - 16.00, 5.00, 200,0, "rgb(155, 110, 15)"); //5-4
+createSide2(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)) - 2.50, 5.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //5-5-1
+createSide2(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,  startY1 - 6.00 * (Math.pow(2,1/2)) - 11.50, 9.00, 200, Math.PI/2, "rgb(155, 110, 15)"); //5-5-2
 
 
 // ==========================================================================================================
-// restaurant right  #6
-createSide2(startX1 + 200, startY1 + 1000, 400, 200, 0);  //6-1-1
-createSide2(startX1 + 800, startY1 + 1000, 400, 200, 0);  //6-1-2
-createSide2(startX1 + 1000,  525+ 300 * (Math.pow(2,1/2)), 600 * (Math.pow(2,1/2))-150, 200, Math.PI/2);  //6-2-1
-createSide2(startX1 + 1000,  1875+ 300 * (Math.pow(2,1/2)), -600 * (Math.pow(2,1/2))+2450, 200, Math.PI/2);  //6-2-2
-createdoor(startX1 +1000,  -startY1 + 600 * (Math.pow(2,1/2)) + 150, 200, 200, Math.PI/2);
-
-createwall(startX1 +1300 + 300 * (Math.pow(2,1/2)),  -startY1 + 600 * (Math.pow(2,1/2)) + 50, 600 * (Math.pow(2,1/2)) + 600, 200, 0);
-createwall(startX1 +1300,  -startY1 + 600 * (Math.pow(2,1/2)) + 250, 600, 200, 0);
-createwall(startX1 + 300 * (Math.pow(2,1/2)) + 1700,  -startY1 + 600 * (Math.pow(2,1/2)) + 250 , -200 + 600 * (Math.pow(2,1/2)), 200, 0);
-createwall(startX1 + 1800,  1375 + 300 * (Math.pow(2,1/2)) , 1450 - 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-createwall(startX1 + 1600,  1375 + 300 * (Math.pow(2,1/2)) , 1450 - 600 * (Math.pow(2,1/2)), 200, Math.PI/2);
-
-
-
-createSide2(startX1 + 500, startY1 + 3500, 1000, 200, 0);  //6-3
-createSide2(startX1 - 250, startY1 + 3250, 500 * (Math.pow(2,1/2)), 200, -Math.PI/4);  //6-4
-createSide2(startX1 - 500, 300 * (Math.pow(2,1/2)) + 950, 600 * (Math.pow(2,1/2)) - 300, 200, Math.PI/2);  //6-5-1
-createSide2(startX1 - 500, 300 * (Math.pow(2,1/2)) + 1800, -600 * (Math.pow(2,1/2))+ 1600, 200, Math.PI/2);  //6-5-1
-
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 800, 600 * (Math.pow(2,1/2)) - 800, 200, Math.PI/2); //4-5-1
-createSide2(-startX1 -1600 -600 * (Math.pow(2,1/2)) ,  -startY1 + 600 * (Math.pow(2,1/2)) + 1150, 900, 200, Math.PI/2); //4-5-2
-
-
-createSide2(startX1 - 250, startY1 + 1250, 500 * (Math.pow(2,1/2)), 200, Math.PI/4);  //6-6
-createdoor(startX1 + 500, startY1 + 1000, 200, 200, 0);  //6-1-1
-
+// #6
+createSide2(startX1 + 2.00, startY1 + 10.00, 4.00, 200, 0, "rgb(91, 100, 110)");  //6-1-1
+createSide2(startX1 + 8.00, startY1 + 10.00, 4.00, 200, 0,  "rgb(91, 100, 110)");  //6-1-2
+createSide2(startX1 + 10.00,  5.25+ 3.00 * (Math.pow(2,1/2)), 6.00 * (Math.pow(2,1/2))-1.50, 200, Math.PI/2,  "rgb(91, 100, 110)");  //6-2-1
+createSide2(startX1 + 10.00,  18.75+ 3.00 * (Math.pow(2,1/2)), -6.00 * (Math.pow(2,1/2))+24.50, 200, Math.PI/2, "rgb(91, 100, 110)");  //6-2-2
+createSide2(startX1 + 5.00, startY1 + 35.00, 10.00, 200, 0,  "rgb(91, 100, 110)");  //6-3
+createSide2(startX1 - 2.50, startY1 + 32.50, 5.00 * (Math.pow(2,1/2)), 200, -Math.PI/4,  "rgb(91, 100, 110)");  //6-4
+createSide2(startX1 - 5.00, 3.00 * (Math.pow(2,1/2)) + 9.50, 6.00 * (Math.pow(2,1/2)) - 3.00, 200, Math.PI/2,  "rgb(91, 100, 110)");  //6-5-1
+createSide2(startX1 - 5.00, 3.00 * (Math.pow(2,1/2)) + 18.00, -6.00 * (Math.pow(2,1/2))+ 16.00, 200, Math.PI/2,  "rgb(91, 100, 110)");  //6-5-2
+createSide2(startX1 - 2.50, startY1 + 12.50, 5.00 * (Math.pow(2,1/2)), 200, Math.PI/4,  "rgb(91, 100, 110)");  //6-6
 // ==========================================================================================================
-// restaurant right  #7
-createSide2(startX1 + 1200, startY1 + 3000, 1000, 200, Math.PI/2);  //7-1
-createSide2(startX1 + 1600, startY1 + 3500, 800, 200, 0);  //7-2
-createSide2(startX1 + 2100, startY1 + 3400, 200 * (Math.pow(2,1/2)), 200, Math.PI/4);  //7-2
-createSide2(startX1 + 2200, startY1 + 2900, 800, 200, Math.PI/2);  //7-4
-
-createSide2(startX1 + 1400, startY1 + 2500, 400, 200, 0);  //7-5-1
-createSide2(startX1 + 2000, startY1 + 2500, 400, 200, 0);  //7-5-2
-
+//  #7
+createSide2(startX1 + 12.00, startY1 + 30.00, 10.00, 200, Math.PI/2, "rgb(90, 94, 74)");  //7-1
+createSide2(startX1 + 16.00, startY1 + 35.00, 8.00, 200, 0, "rgb(90, 94, 74)");  //7-2
+createSide2(startX1 + 21.00, startY1 + 34.00, 2.00 * (Math.pow(2,1/2)), 200, Math.PI/4, "rgb(90, 94, 74)");  //7-2
+createSide2(startX1 + 22.00, startY1 + 29.00, 8.00, 200, Math.PI/2, "rgb(90, 94, 74)");  //7-4
+createSide2(startX1 + 14.00, startY1 + 25.00, 4.00, 200, 0, "rgb(90, 94, 74)");  //7-5-1
+createSide2(startX1 + 20.00, startY1 + 25.00, 4.00, 200, 0, "rgb(90, 94, 74)");  //7-5-2
 // ==========================================================================================================
-// restaurant right  #8
-createSide2(startX1 + 1700, startY1 +500, 1000, 200, 0);  //8-1
-createSide2(startX1 + 1200, startY1 +550, 100, 200, Math.PI/2);  //8-2-1
-createSide2(startX1 + 1200, startY1 +1150, 700, 200, Math.PI/2);  //8-2-2
-createSide2(startX1 + 1650, startY1 +1500, 900, 200, 0);  //8-3
-createSide2(startX1 + 2150, startY1 +1450, 100 * (Math.pow(2,1/2)), 200, Math.PI/4);  //8-4
-createSide2(startX1 + 2200, startY1 +950, 900, 200, Math.PI/2);  //8-5
-
-
+// #8
+createSide2(startX1 + 17.00, startY1 +5.00, 10.00, 2.00, 0, "rgb(90, 94, 74)");  //8-1
+createSide2(startX1 + 12.00, startY1 +5.50, 1.00, 2.00, Math.PI/2, "rgb(90, 94, 74)");  //8-2-1
+createSide2(startX1 + 12.00, startY1 +11.50, 7.00, 2.00, Math.PI/2, "rgb(90, 94, 74)");  //8-2-2
+createSide2(startX1 + 16.50, startY1 +15.00, 9.00, 2.00, 0, "rgb(90, 94, 74)");  //8-3
+createSide2(startX1 + 21.50, startY1 +14.50, 1.00 * (Math.pow(2,1/2)), 200, Math.PI/4, "rgb(90, 94, 74)");  //8-4
+createSide2(startX1 + 22.00, startY1 +9.50, 9.00, 200, Math.PI/2, "rgb(90, 94, 74)");  //8-5
 // ==========================================================================================================
-// restaurant right  #9
-createSide2(startX1 - 2000, startY1 -300, 1000, 200, Math.PI/2);  //9-1
-createSide2(startX1 - 1500, startY1 + 200, 1000, 200, 0);  //9-2
-createSide2(startX1 - 1000, startY1 +100, 200, 200, Math.PI/2);  //9-3
-createSide2(startX1 - 1100, startY1 -100, 200 * (Math.pow(2,1/2)), 200, -Math.PI/4);  //9-4
-createSide2(startX1 - 1200, startY1 - 500, 600, 200, Math.PI/2);  //9-5
-createSide2(startX1 - 1350, startY1 - 800, 300, 200, 0);  //9-6-1
-createSide2(startX1 - 1850, startY1 - 800, 300, 200, 0);  //9-6-2
-
-
+// #9
+createSide2(startX1 - 20.00, startY1 -3.00, 10.00, 200, Math.PI/2, "rgb(180, 180, 180)");  //9-1
+createSide2(startX1 - 15.00, startY1 + 2.00, 10.00, 200, 0, "rgb(180, 180, 180)");  //9-2
+createSide2(startX1 - 10.00, startY1 +1.00, 2.00, 200, Math.PI/2, "rgb(180, 180, 180)");  //9-3
+createSide2(startX1 - 11.00, startY1 -1.00, 2.00 * (Math.pow(2,1/2)), 200, -Math.PI/4, "rgb(180, 180, 180)");  //9-4
+createSide2(startX1 - 12.00, startY1 - 5.00, 6.00, 200, Math.PI/2, "rgb(180, 180, 180)");  //9-5
+createSide2(startX1 - 13.50, startY1 - 8.00, 3.00, 200, 0, "rgb(180, 180, 180)");  //9-6-1
+createSide2(startX1 - 18.50, startY1 - 8.00, 3.00, 200, 0, "rgb(180, 180, 180)");  //9-6-2
 // ==========================================================================================================
-// restaurant right  #10
-createSide2(200+startX1 - 2000,  200 -startY1 +300, 1000, 200, Math.PI/2);  //10-1
-createSide2(200+startX1 - 1500, 200-startY1 - 200, 1000, 200, 0);  //10-2
-createSide2(200+startX1 - 1000, 200-startY1 -100, 200, 200, Math.PI/2);  //10-3
-createSide2(200+startX1 - 1100, 200-startY1 +100, 200* (Math.pow(2,1/2)), 200, Math.PI/4);  //10-4
-createSide2(200+startX1 - 1200, 200-startY1 + 500, 600, 200, Math.PI/2);  //10-5
-createSide2(200+startX1 - 1350, 200-startY1 + 800, 300, 200, 0);  //10-6-1
-createSide2(200+startX1 - 1850, 200-startY1 + 800, 300, 200, 0);  //10-6-2
+// #10
+createSide2(2.00+startX1 - 20.00,  2.00 -startY1 +3.00, 10.00, 200, Math.PI/2, "rgb(90, 94, 74)");  //10-1
+createSide2(2.00+startX1 - 15.00, 2.00-startY1 - 2.00, 10.00, 200, 0, "rgb(90, 94, 74)");  //10-2
+createSide2(2.00+startX1 - 10.00, 2.00-startY1 -1.00, 2.00, 200, Math.PI/2, "rgb(90, 94, 74)");  //10-3
+createSide2(2.00+startX1 - 11.00, 2.00-startY1 +1.00, 2.00* (Math.pow(2,1/2)), 200, Math.PI/4, "rgb(90, 94, 74)");  //10-4
+createSide2(2.00+startX1 - 12.00, 2.00-startY1 + 5.00, 6.00, 200, Math.PI/2, "rgb(90, 94, 74)");  //10-5
+createSide2(2.00+startX1 - 13.50, 2.00-startY1 + 8.00, 3.00, 200, 0, "rgb(90, 94, 74)");  //10-6-1
+createSide2(2.00+startX1 - 18.50, 2.00-startY1 + 8.00, 3.00, 200, 0, "rgb(90, 94, 74)");  //10-6-2
+// ==========================================================================================================
 
-createwall(-1550 - 300 * (Math.pow(2,1/2)), 800 + 600* (Math.pow(2,1/2)), -100 + 600* (Math.pow(2,1/2)), 200, 0);
-createwall(-1050-300 * (Math.pow(2,1/2)), 1000 + 600* (Math.pow(2,1/2)), 900 + 600* (Math.pow(2,1/2)), 200, 0);
-createwall(-1000, 800 + 600* (Math.pow(2,1/2)), 800, 200, 0);
-createwall(-1600, 1100 + 300* (Math.pow(2,1/2)), 600* (Math.pow(2,1/2)) - 600, 200, Math.PI/2);
-createwall(-1400, 1100 + 300* (Math.pow(2,1/2)), 600* (Math.pow(2,1/2)) - 600, 200, Math.PI/2);
-createdoor(-1500 - 600 * (Math.pow(2,1/2)), 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);
-createdoor(-600, 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);  
+createwall( -6.00 * (Math.pow(2,1/2)) -8.00, -6.00 * (Math.pow(2,1/2))-7.00+ startY1, 14.00, 200, 0, "rgb(130, 157, 180)"); //w1
+createwall( -3.00 * (Math.pow(2,1/2)) -16.50, -6.00 * (Math.pow(2,1/2))-5.00+ startY1, -3.00 + 6.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)");  //w2
+createwall( -3.00 * (Math.pow(2,1/2)) -8.50, -6.00 * (Math.pow(2,1/2))-5.00+ startY1, 15.00 - 6.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)");  //w3
+createwall( -18.00, -3.00 * (Math.pow(2,1/2))-10.50, -3.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); // w4
+createwall( -16.00, -3.00 * (Math.pow(2,1/2))-10.50, -3.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w5
+createwall(startX1 +14.00 +6.00 * (Math.pow(2,1/2)) ,  -6.00 * (Math.pow(2,1/2))-7.00+ startY1, 4.00, 200, 0, "rgb(130, 157, 180)"); //w6
+createwall(startX1 +14.00 +6.00 * (Math.pow(2,1/2)) ,  -6.00 * (Math.pow(2,1/2))-5.00+ startY1, 4.00, 200, 0, "rgb(130, 157, 180)"); //w7
+createwall(startX1 +20.00 +6.00 * (Math.pow(2,1/2)), 0, - 2 * startY1 + 12.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w8
+createwall(startX1 +22.00 +6.00 * (Math.pow(2,1/2)),-2.50 - 3.0 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w9
+createwall(startX1 +22.00 +6.00 * (Math.pow(2,1/2)), 2.50 + 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w10
+createSide3(startX1 +38.00 +5.00 * (Math.pow(2,1/2)), 2.50 + 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(60, 75, 75)"); //w11
+createSide3(startX1 +38.00 +5.00 * (Math.pow(2,1/2)),-2.50 - 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(60, 75, 75)"); //w12
+createwall(startX1 +30.00 +5.50 * (Math.pow(2,1/2)),-1.00,  16.00 - 1.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)"); //w13
+createwall(startX1 +30.00 +5.50 * (Math.pow(2,1/2)),1.00,  16.00 - 1.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)");  //w14
+createwall(startX1 + 2.00- 20.00 - 6.00 * (Math.pow(2,1/2)), 0, - 2 * startY1 + 12.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w15
+createwall(startX1 + 2.00- 30.00 -5.50 * (Math.pow(2,1/2)),1.00,  16.00 - 1.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)"); //w16
+createwall(startX1 + 2.00- 30.00 - 5.50 * (Math.pow(2,1/2)),-1.00,  16.00 - 1.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)"); // w17
+createwall(startX1 + 2.00- 22.00 - 6.00 * (Math.pow(2,1/2)),-2.50 - 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w18
+createwall(startX1 + 2.00- 22.00 - 6.00 * (Math.pow(2,1/2)), 2.50 + 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w19
+createSide3(startX1 + 2.00- 38.00 - 5.0 * (Math.pow(2,1/2)), 2.50 + 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(60, 75, 75)"); //w20
+createSide3(startX1 + 2.00- 38.00 - 5.00 * (Math.pow(2,1/2)),-2.50 - 3.00 * (Math.pow(2,1/2)), - startY1 - 1.00 + 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(60, 75, 75)"); //w21
+createwall(startX1 +13.00 + 3.00 * (Math.pow(2,1/2)),  -startY1 + 6.00 * (Math.pow(2,1/2)) + 0.50, 6.00 * (Math.pow(2,1/2)) + 6.00, 200, 0, "rgb(130, 157, 180)"); //w22
+createwall(startX1 +13.00,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 2.50, 6.00, 200, 0, "rgb(130, 157, 180)"); //w23
+createwall(startX1 + 3.00 * (Math.pow(2,1/2)) + 17.00,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 2.50 , -2.00 + 6.00 * (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)"); //w24
+createwall(startX1 + 16.00,  13.75 + 3.00 * (Math.pow(2,1/2)) , 14.50 - 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w25
+createwall(startX1 + 18.00,  13.75 + 3.00 * (Math.pow(2,1/2)) , 14.50 - 6.00 * (Math.pow(2,1/2)), 200, Math.PI/2, "rgb(130, 157, 180)"); //w26
+createwall(-15.50 - 3.00 * (Math.pow(2,1/2)), 8.00 + 6.00* (Math.pow(2,1/2)), -1.00 + 6.00* (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)"); //w27
+createwall(-10.50-3.00 * (Math.pow(2,1/2)), 10.00 + 6.00* (Math.pow(2,1/2)), 9.00 + 6.00* (Math.pow(2,1/2)), 200, 0, "rgb(130, 157, 180)");//w28
+createwall(-10.00, 8.00 + 6.00* (Math.pow(2,1/2)), 8.00, 200, 0, "rgb(130, 157, 180)"); //w29
+createwall(-16.00, 11.00 + 3.00* (Math.pow(2,1/2)), 6.00* (Math.pow(2,1/2)) - 6.00, 200, Math.PI/2, "rgb(130, 157, 180)"); //w30
+createwall(-14.00, 11.00 + 3.00* (Math.pow(2,1/2)), 6.00* (Math.pow(2,1/2)) - 6.00, 200, Math.PI/2, "rgb(130, 157, 180)"); //w31
+createwall(startX1 + 4.00, startY1 + 5.00, 10.00, 200, Math.PI/2, "rgb(130, 157, 180)"); //w32
+createwall(startX1 + 6.00, startY1 + 3.00, 6.00, 200, Math.PI/2, "rgb(130, 157, 180)"); //w33
+createwall(startX1 + 6.00, startY1 + 9.00, 2.00, 200, Math.PI/2, "rgb(130, 157, 180)"); //w34
+createwall(startX1 + 9.00, startY1 + 6.00, 6.00, 200, 0, "rgb(130, 157, 180)"); //w35
+createwall(startX1 + 9.00, startY1 + 8.00, 6.00, 200, 0, "rgb(130, 157, 180)"); //w36
 
+createdoor(startX1 +12.00 + 6.00 * (Math.pow(2,1/2)), -6.00 * (Math.pow(2,1/2))-6.00+ startY1, 2.00, 200, Math.PI/2); //d1
+createdoor(startX1  - 6.00 * (Math.pow(2,1/2)), -6.00 * (Math.pow(2,1/2))-6.00+ startY1, 2.00, 200, Math.PI/2); //d2
+
+createdoor(startX1 +16.00 +6.00 * (Math.pow(2,1/2)) ,  -6.00 * (Math.pow(2,1/2))-6.00+ startY1, 2.00, 200, Math.PI/2); //d4
+createdoor(startX1 +21.00 +6.00 * (Math.pow(2,1/2)) ,  startY1 -6.00 * (Math.pow(2,1/2)), 2.00, 200, 0); //d5
+createdoor(startX1 +21.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)), 2.00, 200, 0); //d6
+createdoor(startX1 +16.00 +6.00 * (Math.pow(2,1/2)) ,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 1.50, 2.00, 200, Math.PI/2); //d7
+createdoor(-startX1 -16.00 -6.00 * (Math.pow(2,1/2)) ,  -6.00 * (Math.pow(2,1/2))-6.00+ startY1, 2.00, 200, Math.PI/2); //d8
+createdoor(startX1 +10.00,  -startY1 + 6.00 * (Math.pow(2,1/2)) + 1.50, 2.00, 200, Math.PI/2); //d9
+createdoor(-6.00, 9.00 + 6.00* (Math.pow(2,1/2)), 2.00, 200, Math.PI/2);  //d10
+createdoor(-15.00 - 6.00 * (Math.pow(2,1/2)), 9.00 + 6.00* (Math.pow(2,1/2)), 2.00, 200, Math.PI/2); //d11
+createdoor(startX1 + 5.00, startY1 + 0, 2.00, 200, 0);  //d12
+createdoor(startX1 + 5.00, startY1 + 10.00, 2.00, 200, 0);  //d13
 
 //============================================================
   // Create the camera.
@@ -301,7 +312,7 @@ createdoor(-600, 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);
   90, 1280/720, 0.1, 10000
   );
   camera.position.z = 0;
-  camera.position.y = 5000;
+  camera.position.y = 50;
   box.add( camera );
 
   // Build the renderer
@@ -316,7 +327,7 @@ createdoor(-600, 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);
   controls.enablePan = true;
   controls.enableZoom = true;
   controls.maxDistance = 1000; // Set our max zoom out distance (mouse scroll)
-  controls.minDistance = 60; // Set our min zoom in distance (mouse scroll)
+  controls.minDistance = 6; // Set our min zoom in distance (mouse scroll)
   controls.target.copy( new THREE.Vector3( 0, characterSize/2, 0 ) );
 
   document.addEventListener( 'mousedown', onDocumentMouseDown, false );
@@ -326,33 +337,156 @@ createdoor(-600, 900 + 600* (Math.pow(2,1/2)), 200, 200, Math.PI/2);
 }
 
 
-function createCharacter() {
-
-
-
-  var geometry = new THREE.BoxBufferGeometry( 50, 50, 50 );
-  var material = new THREE.MeshPhongMaterial({ color: 0x22dd88 });
-  box = new THREE.Mesh( geometry, material);
-  box.position.y = 0;
-
-
-  rotationPoint.add( box );
-  // Create outline object
-}
 
 /**
  * Create the floor of the scene.
  */
 
 function createFloor() {
-  var geometry = new THREE.PlaneBufferGeometry( 12000, 8000 );
-  var material = new THREE.MeshPhongMaterial({ color: 0xffffff });
-
+  var geometry = new THREE.PlaneBufferGeometry( 120, 80 );
+  var material = new THREE.MeshPhongMaterial({ color: "rgb(100, 100, 100)" });
   var plane = new THREE.Mesh( geometry, material );
   plane.rotation.x = -1 * Math.PI/2;
   plane.position.y = 0;
   scene.add( plane );
   objects.push( plane );
+}
+
+//============================================================
+//wall floor2
+createFloor2(4.00, 1.00, 2.00, 10.00, "rgb(130, 157, 180)");
+createFloor2(8.00, 3.00, 6.00, 2.00, "rgb(130, 157, 180)");
+createFloor2(13.00 + 6.00 * (Math.pow(2,1/2)), -10.00 - 6.00 * (Math.pow(2,1/2)), 4.00, 2.00, "rgb(130, 157, 180)");
+createFloor2(-15.00, 15.50, 2.00, 2.50, "rgb(130, 157, 180)");
+createFloor2(-15.00, 17.50, 9.00 + 6.00 * (Math.pow(2,1/2)), 2.00, "rgb(130, 157, 180)");
+createFloor2(12.00 + 3.00 * (Math.pow(2,1/2)), 6.00 + 6.00 * (Math.pow(2,1/2)), 6.00 + 6.00 * (Math.pow(2,1/2)), 2.00, "rgb(130, 157, 180)");
+createFloor2(16.00, 13.75 + 3.00 * (Math.pow(2,1/2)), 2.00, 14.50 -6.00 * (Math.pow(2,1/2)) , "rgb(130, 157, 180)");
+
+createFloor2(20.00 + 6.00 * (Math.pow(2,1/2)), 0, 2.00, 8.00 + 12.00 * (Math.pow(2,1/2)), "rgb(130, 157, 180)");
+createFloor2(-20.00 - 6.00 * (Math.pow(2,1/2)), 0, 2.00, 8.00 + 12.00 * (Math.pow(2,1/2)), "rgb(130, 157, 180)");
+createFloor2(-8.00 - 6.00 * (Math.pow(2,1/2)), -10.00 - 6.00 * (Math.pow(2,1/2)), 14.00, 2.00, "rgb(130, 157, 180)");
+createFloor2(-17.00, -10.50 - 3.00 * (Math.pow(2,1/2)), 2.00, -3.00 + 6.00 * (Math.pow(2,1/2)), "rgb(130, 157, 180)");
+
+//============================================================
+// #1
+createFloor2(5.00, - 3.00 * (Math.pow(2,1/2)) - 4.00 , 12.00, 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 255)");
+createFloor2(5.00, -10.00 - 6.00 * (Math.pow(2,1/2)) , 12.00 + 12.00 * (Math.pow(2,1/2)), 12.00, "rgb(255, 255, 255)");
+createFloor2(5.00, - 9.00 * (Math.pow(2,1/2)) - 16.00 , 12.00, 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 255)");
+//============================================================
+// #2
+createFloor2(20.00 + 6.00 * (Math.pow(2,1/2)), -9.50 - 6.00 * (Math.pow(2,1/2)) , 10.00, 11.00, "rgb(190, 195, 165)");
+createFloor2(17.50 + 6.00 * (Math.pow(2,1/2)), -17.50 - 6.00 * (Math.pow(2,1/2)) , 5.00, 5.00, "rgb(190, 195, 165)");
+
+//============================================================
+// #3
+createFloor2(20.00 + 6.00 * (Math.pow(2,1/2)), 9.50 + 6.00 * (Math.pow(2,1/2)) , 10.00, 11.00, "rgb(190, 195, 165)");
+createFloor2(17.50 + 6.00 * (Math.pow(2,1/2)), 17.50 + 6.00 * (Math.pow(2,1/2)) , 5.00, 5.00, "rgb(190, 195, 165)");
+
+//============================================================
+// #4
+createFloor2(-20.00 - 6.00 * (Math.pow(2,1/2)), - 9.50 - 6.00 * (Math.pow(2,1/2)) , 10.00, 11.00, "rgb(155, 110, 15)");
+createFloor2(-17.50 - 6.00 * (Math.pow(2,1/2)), - 17.50 - 6.00 * (Math.pow(2,1/2)) , 5.00, 5.00, "rgb(155, 110, 15)");
+
+
+//============================================================
+// #5
+createFloor2(-20.00 - 6.00 * (Math.pow(2,1/2)), 9.50 + 6.00 * (Math.pow(2,1/2)) , 10.00, 11.00, "rgb(155, 110, 15)");
+createFloor2(-17.50 - 6.00 * (Math.pow(2,1/2)), 17.50 + 6.00 * (Math.pow(2,1/2)) , 5.00, 5.00, "rgb(155, 110, 15)");
+
+//============================================================
+// #6
+createFloor2(4.00, 18.50, 10.00, 25.00, "rgb(91, 100, 110)");
+createFloor2(-3.50, 18.50, 5.00, 15.00, "rgb(91, 100, 110)");
+//============================================================
+// #7
+createFloor2(16.00, 26.00, 10.00, 10.0, "rgb(90, 94, 74)");
+//============================================================
+// #8
+createFloor2(16.00, 6.00, 10.00, 10.00, "rgb(90, 94, 74)");
+//============================================================
+// #9
+createFloor2(-17.00, -7.00, 8.00, 10.00, "rgb(255, 255, 255)");
+createFloor2(-12.00, -3.00, 2.00, 2.00, "rgb(255, 255, 255)");
+
+//============================================================
+// #10
+createFloor2(-15.00, 9.00, 8.00, 10.00, "rgb(90, 94, 74)");
+createFloor2(-10.00, 5.00, 2.00, 2.00, "rgb(90, 94, 74)");
+
+//============================================================
+// rightest side
+createFloor2(29.00 + 5.50 * (Math.pow(2,1/2)), 0, 16.00- 1.00 * (Math.pow(2,1/2)), 2.00, "rgb(130, 157, 180)");
+
+//============================================================
+// leftest side
+createFloor2(-29.00 - 5.50 * (Math.pow(2,1/2)), 0, 16.00- 1.00 * (Math.pow(2,1/2)), 2.00, "rgb(130, 157, 180)");
+
+
+
+function createFloor2(x, z, xsize, ysize, color) {
+  var geometry = new THREE.PlaneBufferGeometry( xsize, ysize );
+  var material = new THREE.MeshPhongMaterial({ color: color });
+  var plane = new THREE.Mesh( geometry, material );
+  plane.rotation.x = -1 * Math.PI/2;
+
+  plane.position.y = 0.02;
+  plane.position.x = x;
+  plane.position.z = z;
+
+  scene.add( plane );
+  objects.push( plane );
+}
+//============================================================
+// #1
+createTriangle(-1.00, 4.00, -1.00, 4.00 + 6.00 * (Math.pow(2,1/2)), -1.00 - 6.00 * (Math.pow(2,1/2)) ,4.00 + 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 255)", 0, 1, 2);
+createTriangle(11.00, 4.00, 11.00, 4.00 + 6.00 * (Math.pow(2,1/2)), 11.00 + 6.00 * (Math.pow(2,1/2)) ,4.00 + 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 255)", 0, 2, 1);
+createTriangle(-1.00, 16.00 + 6.00 * (Math.pow(2,1/2)), -1.00, 16.00 + 12.00 * (Math.pow(2,1/2)), -1.00 - 6.00 * (Math.pow(2,1/2)) ,16.00 + 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 255)", 0, 1, 2);
+createTriangle(11.00, 16.00 + 6.00 * (Math.pow(2,1/2)), 11.00, 16.00 + 12.00 * (Math.pow(2,1/2)), 11.00 + 6.00 * (Math.pow(2,1/2)) ,16.00 + 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 255)", 0, 2, 1);
+//============================================================
+// #2,3,4,5
+createTriangle(20.00 + 6.00 * (Math.pow(2,1/2)),  20.00 + 6.00 * (Math.pow(2,1/2)), 25.00 + 6.00 * (Math.pow(2,1/2)),  15.00 + 6.00 * (Math.pow(2,1/2)), 20.00 + 6.00 * (Math.pow(2,1/2)),  15.00 + 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 236)", 0, 2, 1);
+createTriangle(20.00 + 6.00 * (Math.pow(2,1/2)),  -20.00 - 6.00 * (Math.pow(2,1/2)), 25.00 + 6.00 * (Math.pow(2,1/2)),  -15.00 - 6.00 * (Math.pow(2,1/2)), 20.00 + 6.00 * (Math.pow(2,1/2)),  -15.00 - 6.00 * (Math.pow(2,1/2)), "rgb(255, 255, 236)", 0, 1, 2);
+createTriangle(-20.00 - 6.00 * (Math.pow(2,1/2)),  -20.00 - 6.00 * (Math.pow(2,1/2)), -25.00 - 6.00 * (Math.pow(2,1/2)),  -15.00 - 6.00 * (Math.pow(2,1/2)), -20.00 - 6.00 * (Math.pow(2,1/2)),  -15.00 - 6.00 * (Math.pow(2,1/2)), "rgb(222, 158, 21)", 0, 2, 1);
+createTriangle(-20.00 - 6.00 * (Math.pow(2,1/2)),  20.00 + 6.00 * (Math.pow(2,1/2)), -25.00 - 6.00 * (Math.pow(2,1/2)),  15.00 + 6.00 * (Math.pow(2,1/2)), -20.00 - 6.00 * (Math.pow(2,1/2)),  15.00 + 6.00 * (Math.pow(2,1/2)), "rgb(222, 158, 21)", 0, 1, 2);
+//============================================================
+// #6
+createTriangle(-1.00, -6.00, -6.00, -11.00, -1.00, -11.00, "rgb(130, 143, 158)", 0, 1, 2);
+createTriangle(-1.00, -31.00, -6.00, -26.00, -1.00, -26.00, "rgb(130, 143, 158)", 0, 2, 1);
+
+createTriangle(-13.00, 6.00, -11.00, 4.00, -13.00, 4.00, "rgb(255, 255, 255)", 0, 2, 1);
+createTriangle(-11.00, -8.00, -9.00, -6.00, -11.00, -6.00, "rgb(129, 135, 106)", 0, 1, 2);
+
+
+function createTriangle(x1, y1, x2, y2, x3, y3, color, seq1, seq2, seq3) {
+  var geometry = new THREE.Geometry();
+  geometry.vertices.push(
+    new THREE.Vector3(x1,y1,0),
+    new THREE.Vector3(x2,y2,0),
+    new THREE.Vector3(x3,y3,0)
+  );
+  geometry.faces.push(new THREE.Face3(seq1,seq2,seq3));
+
+  var material = new THREE.MeshBasicMaterial({color: color});
+  var plane = new THREE.Mesh( geometry, material);
+  plane.rotation.x = -1 * Math.PI/2;
+  plane.position.y = 0.02;
+  scene.add( plane );
+}
+
+createTable("rgb(78, 132, 159)", -1, 0, -16-6 *(Math.pow(2,1/2)) );
+createTable("rgb(78, 132, 159)", 11, 0, -16-6 *(Math.pow(2,1/2)) );
+createTable("rgb(78, 132, 159)", 5, 0, -10-6 *(Math.pow(2,1/2)) );
+createTable("rgb(78, 132, 159)", -1, 0, -4-6 *(Math.pow(2,1/2)) );
+createTable("rgb(78, 132, 159)", 11, 0, -4-6 *(Math.pow(2,1/2)) );
+
+function createTable(color, x, y, z) {
+  var geometry = new THREE.CylinderGeometry(3, 3, 0.75, 10);
+  var material = new THREE.MeshBasicMaterial({color: color});
+  var plane = new THREE.Mesh( geometry, material);
+  plane.position.x = x;
+  plane.position.y = y;
+  plane.position.z = z;
+  scene.add( plane );
 }
 
 /**
@@ -364,15 +498,13 @@ function createSide1( posX, posZ, zlength ) {
   var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
 
   // Create the trunk.
-  var textureLoader = new THREE.TextureLoader();
-	crateTexture = textureLoader.load("crate0/problem1.png");
-  var geometry = new THREE.BoxGeometry( characterSize/3.5, 200, zlength, 8 ); //200은 높이
-  var material = new THREE.MeshPhongMaterial( {color: 0x664422,
-    map:crateTexture
-
+  var geometry = new THREE.BoxGeometry( characterSize/3.5, 2, zlength, 8 ); //200은 높이
+  var material = new THREE.MeshPhongMaterial( {color: "rgb(60, 75, 75)"
   } );
+
+
   var trunk = new THREE.Mesh( geometry, material );
-  trunk.position.set(posX, 100, posZ);
+  trunk.position.set(posX, 1, posZ);
   trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
   scene.add( trunk );
 
@@ -381,24 +513,23 @@ function createSide1( posX, posZ, zlength ) {
   // Create the trunk outline.
 
 
-  var geometry = new THREE.DodecahedronGeometry( characterSize );
-  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
-
-
-  // Create outline.
 
 }
 
-function createSide2( posX, posZ, xlength, zlength, rotate ) {
+function createSide2( posX, posZ, xlength, zlength, rotate, color ) {
   // Set some random values so our trees look different.
   var randomScale =1;
   var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
 
   // Create the trunk.
-  var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
-  var material = new THREE.MeshPhongMaterial( {color: 0x664422} );
+  var textureLoader = new THREE.TextureLoader();
+  crateTexture = textureLoader.load("crate0/corridor_wall.png");
+  var geometry = new THREE.BoxGeometry( xlength, 3, characterSize/3.5, 8 );
+  var material = new THREE.MeshPhongMaterial( {color: color,
+    map:crateTexture
+  } );
   var trunk = new THREE.Mesh( geometry, material );
-  trunk.position.set(posX, 100, posZ);
+  trunk.position.set(posX, 1, posZ);
   trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
   trunk.rotation.y = rotate;
 
@@ -408,25 +539,42 @@ function createSide2( posX, posZ, xlength, zlength, rotate ) {
 
   // Create the trunk outline.
 
-
-  var geometry = new THREE.DodecahedronGeometry( characterSize );
-  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
-
-
-  // Create outline.
-
 }
 
+
+function createSide3( posX, posZ, xlength, zlength, rotate, color ) {
+  // Set some random values so our trees look different.
+  var randomScale =1;
+  var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
+
+  // Create the trunk.
+  var geometry = new THREE.BoxGeometry( xlength, 3, characterSize/3.5, 8 );
+  var material = new THREE.MeshPhongMaterial( {color: color } );
+  var trunk = new THREE.Mesh( geometry, material );
+  trunk.position.set(posX, 1, posZ);
+  trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
+  trunk.rotation.y = rotate;
+
+  scene.add( trunk );
+
+  calculateCollisionPoints( trunk, randomScale );
+
+  // Create the trunk outline.
+
+}
 function createdoor( posX, posZ, xlength, zlength, rotate ) {
   // Set some random values so our trees look different.
   var randomScale =1;
   var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
+  var textureLoader = new THREE.TextureLoader();
+  crateTexture = textureLoader.load("crate0/crate0_bump.jpg");
+  var geometry = new THREE.BoxGeometry( xlength, 3, characterSize/3.5, 8 );
+  var material = new THREE.MeshBasicMaterial( {color: "rgb(127, 127, 127)",
+    map:crateTexture
+  } );
 
-  // Create the trunk.
-  var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
-  var material = new THREE.MeshPhongMaterial( {color: 0x334422} );
   var trunk = new THREE.Mesh( geometry, material );
-  trunk.position.set(posX, 100, posZ);
+  trunk.position.set(posX, 1, posZ);
   trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
   trunk.rotation.y = rotate;
 
@@ -437,24 +585,27 @@ function createdoor( posX, posZ, xlength, zlength, rotate ) {
   // Create the trunk outline.
 
 
-  var geometry = new THREE.DodecahedronGeometry( characterSize );
-  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
 
 
   // Create outline.
 
 }
 
-function createwall( posX, posZ, xlength, zlength, rotate ) {
+function createwall( posX, posZ, xlength, zlength, rotate, color ) {
   // Set some random values so our trees look different.
   var randomScale =1;
   var randomRotateY = Math.PI/( Math.floor(( Math.random() * 32) + 1 ));
 
+  var textureLoader = new THREE.TextureLoader();
+  crateTexture = textureLoader.load("crate0/corridor_wall.png");
+  var geometry = new THREE.BoxGeometry( xlength, 3, characterSize/3.5, 8 );
+  var material = new THREE.MeshPhongMaterial( {color: color,
+    map:crateTexture
+  } );
   // Create the trunk.
-  var geometry = new THREE.BoxGeometry( xlength, 300, characterSize/3.5, 8 );
-  var material = new THREE.MeshPhongMaterial( {color: 0x111122} );
+
   var trunk = new THREE.Mesh( geometry, material );
-  trunk.position.set(posX, 100, posZ);
+  trunk.position.set(posX, 1, posZ);
   trunk.scale.x = trunk.scale.y = trunk.scale.z = randomScale;
   trunk.rotation.y = rotate;
 
@@ -462,14 +613,7 @@ function createwall( posX, posZ, xlength, zlength, rotate ) {
 
   calculateCollisionPoints( trunk, randomScale );
 
-  // Create the trunk outline.
 
-
-  var geometry = new THREE.DodecahedronGeometry( characterSize );
-  var material = new THREE.MeshPhongMaterial({ color: 0x44aa44 });
-
-
-  // Create outline.
 
 }
 /**
@@ -502,11 +646,11 @@ function onDocumentTouchStart( event ) {
  * Helper function to detect if the user quickly tapped twice.
  */
 function detectDoubleTouch() {
-  // If a single click was detected, start the timer.
+  // If a single click was detected, starts the timer.
   if (clickTimer == null) {
     clickTimer = setTimeout(function () {
       clickTimer = null;
-    }, 300);
+    }, 3.00);
   } else {
     // A double tap was detected!
     clearTimeout(clickTimer);
@@ -575,10 +719,10 @@ function move( location, destination, speed = playerSpeed ) {
     location.position.z = location.position.z + ( moveDistance * ( diffZ / distance )) * multiplierZ;
 
     // If the position is close we can call the movement complete.
-    if (( Math.floor( location.position.x ) <= Math.floor( newPosX ) + 15 &&
-          Math.floor( location.position.x ) >= Math.floor( newPosX ) - 15 ) &&
-        ( Math.floor( location.position.z ) <= Math.floor( newPosZ ) + 15 &&
-          Math.floor( location.position.z ) >= Math.floor( newPosZ ) - 15 )) {
+    if (( Math.floor( location.position.x ) <= Math.floor( newPosX ) + 0.15 &&
+          Math.floor( location.position.x ) >= Math.floor( newPosX ) - 0.15 ) &&
+        ( Math.floor( location.position.z ) <= Math.floor( newPosZ ) + 0.15 &&
+          Math.floor( location.position.z ) >= Math.floor( newPosZ ) - 0.15 )) {
       location.position.x = Math.floor( location.position.x );
       location.position.z = Math.floor( location.position.z );
 
@@ -612,8 +756,8 @@ function render() {
   renderer.render( scene, camera );
 
   // Don't let the camera go too low.
-  if ( camera.position.y < 10 ) {
-    camera.position.y = 10;
+  if ( camera.position.y < 0.1 ) {
+    camera.position.y = 0.1;
   }
 
   // If any movement was added, run it!
@@ -622,10 +766,10 @@ function render() {
     if ( scene.getObjectByName('indicator_top') === undefined ) {
       drawIndicator();
     } else {
-      if ( indicatorTop.position.y > 10 ) {
-        indicatorTop.position.y -= 3;
+      if ( indicatorTop.position.y > 0.10 ) {
+        indicatorTop.position.y -= 0.03;
       } else {
-        indicatorTop.position.y = 100;
+        indicatorTop.position.y = 1.00;
       }
     }
 
@@ -681,17 +825,17 @@ function detectCollisions() {
 
           // Determine the X axis push.
           if (objectCenterX > playerCenterX) {
-            rotationPoint.position.x -= 1;
+            rotationPoint.position.x -= 0.01;
           } else {
-            rotationPoint.position.x += 1;
+            rotationPoint.position.x += 0.01;
           }
         }
         if ( bounds.zMin <= collisions[ index ].zMax && bounds.zMax >= collisions[ index ].zMin ) {
           // Determine the Z axis push.
           if (objectCenterZ > playerCenterZ) {
-          rotationPoint.position.z -= 1;
+          rotationPoint.position.z -= 0.01;
           } else {
-            rotationPoint.position.z += 1;
+            rotationPoint.position.z += 0.01;
           }
         }
       }
